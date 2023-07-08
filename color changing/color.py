@@ -4,6 +4,7 @@ import numpy as np
 def empty(a):
     pass
 
+# stack images function for changing apply on image
 def stackImages(scale,imgArray):
     rows = len(imgArray)
     cols = len(imgArray[0])
@@ -36,8 +37,9 @@ def stackImages(scale,imgArray):
     return ver
 
 
-
+# image
 path = 'E:\\Python Projects\\Upload Projects\\comming soon\\color changing\\img.png'
+# not change spelling
 cv2.namedWindow("TrackBars")
 cv2.resizeWindow("TrackBars",400,240)
 cv2.createTrackbar("Hue Min","TrackBars",0,179,empty)
@@ -50,6 +52,7 @@ cv2.createTrackbar("Val Max","TrackBars",255,255,empty)
 while True:
     img = cv2.imread(path)
     imgHSV = cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
+    # same spelling as above
     h_min = cv2.getTrackbarPos("Hue Min","TrackBars")
     h_max = cv2.getTrackbarPos("Hue Max", "TrackBars")
     s_min = cv2.getTrackbarPos("Sat Min", "TrackBars")
