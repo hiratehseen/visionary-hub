@@ -1,3 +1,8 @@
+"""
+This function takes a frame (image), and the coordinates (x, y) of the top-left corner of a bounding box 
+along with its width (w) and height (h). It extracts the region of interest (ROI) from the frame using these 
+coordinates and dimensions.
+"""
 def classify_motion(frame, x, y, w, h):
     # Extract the region of interest (ROI) from the frame
     roi = frame[y:y+h, x:x+w]
@@ -5,16 +10,26 @@ def classify_motion(frame, x, y, w, h):
     # Convert ROI to grayscale
     gray_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
 
+    """
+    It creates a binary mask where white pixels represent the foreground (moving) objects and black 
+    pixels represent the background.
+    """
     # Apply background subtraction to ROI
     fg_mask_roi = bg_subtractor.apply(gray_roi)
+    # print("Shape", fg_mask_roi.shape)
 
+    """
+    This section calculates the percentage of foreground pixels in the binary mask. It counts the number of 
+    white (foreground) pixels using np.count_nonzero() and calculates the ratio of foreground pixels to the 
+    total number of pixels in the mask.
+    """
     # Calculate percentage of foreground pixels
     total_pixels = fg_mask_roi.shape[0] * fg_mask_roi.shape[1]
     foreground_pixels = np.count_nonzero(fg_mask_roi)
     foreground_percentage = (foreground_pixels / total_pixels) * 100
 
     # Define a threshold for motion detection
-    motion_percentage_threshold = 5  # Adjust as needed
+    motion_percentage_threshold = 50  # Adjust as needed
 
     if foreground_percentage > motion_percentage_threshold:
         # Calculate bounding box aspect ratio
@@ -55,7 +70,7 @@ import cv2
 import numpy as np
 
 # Load YOLOv3
-net = cv2.dnn.readNet("yolov3.weights", "yolov3.cfg")
+net = cv2.dnn.readNet("yolov4.weights", "yolov4.cfg")
 classes = ["person", "ball"]  # Adjust class names as needed
 layer_names = net.getUnconnectedOutLayersNames()
 
