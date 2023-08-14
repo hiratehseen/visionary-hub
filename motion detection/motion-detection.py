@@ -29,7 +29,7 @@ def classify_motion(frame, x, y, w, h):
     foreground_percentage = (foreground_pixels / total_pixels) * 100
 
     # Define a threshold for motion detection
-    motion_percentage_threshold = 50  # Adjust as needed
+    motion_percentage_threshold = 5  # Adjust as needed
 
     if foreground_percentage > motion_percentage_threshold:
         # Calculate bounding box aspect ratio
@@ -51,7 +51,11 @@ def classify_motion(frame, x, y, w, h):
         motion_type = "Static"
 
     return motion_type
-
+"""
+This function calculates the Intersection over Union (IoU) between two bounding boxes. IoU is a measure of
+overlap between two regions and is used to determine how similar two boxes are in terms of spatial 
+coverage.
+"""
 def iou(box1, box2):
     x1, y1, w1, h1 = box1
     x2, y2, w2, h2 = box2
@@ -80,6 +84,10 @@ cap = cv2.VideoCapture("video.mp4")
 # Define motion classes
 motion_classes = ["Moving", "Jumping", "Rolling", "Sliding"]
 
+"""
+This function takes a frame (image), and the coordinates (x, y) of the top-left corner of a bounding box
+along with its width (w) and height (h). It extracts the region of interest (ROI) from the frame using these
+"""
 # Initialize background subtractor
 bg_subtractor = cv2.createBackgroundSubtractorMOG2()
 
@@ -95,7 +103,13 @@ while True:
     ret, frame = cap.read()
     if not ret:
         break
-
+    
+    """
+    Use YOLOv4 to perform object detection. Convert the frame to a blob using cv2.dnn.blobFromImage(), 
+    set it as input to the neural network, and get the output predictions (outs) for each output layer.
+    'scalefactor': This parameter scales the pixel values of the input image. In this case, the value is 0.00392, 
+    which is approximately equivalent to dividing the pixel values by 255 (the range of pixel values in an image).
+    """
     # Object detection
     blob = cv2.dnn.blobFromImage(frame, 0.00392, (416, 416), (0, 0, 0), True, crop=False)
     net.setInput(blob)
